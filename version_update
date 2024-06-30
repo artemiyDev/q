@@ -39,56 +39,6 @@ EOF
 
 sleep 7  # Add a 7-second delay
 
-VERSION="1.4.19.1"
-
-#==========================
-# GO UPGRADE
-#==========================
-
-# Check the currently installed Go version
-if go version &>/dev/null; then
-    INSTALLED_VERSION=$(go version | awk '{print $3}' | sed 's/go//')
-else
-    INSTALLED_VERSION="none"
-fi
-
-# If the installed version is not 1.22.4, proceed with the installation
-if [ "$INSTALLED_VERSION" != "1.22.4" ]; then
-    echo "Current Go version is $INSTALLED_VERSION. Proceeding with installation of Go 1.22.4..."
-
-    # Determine the architecture and OS only if installing a new version
-    ARCH=$(uname -m)
-    OS=$(uname -s)
-
-    # Determine the Go binary name based on the architecture and OS
-    if [ "$ARCH" = "x86_64" ]; then
-        if [ "$OS" = "Linux" ]; then
-            GO_BINARY="go1.22.4.linux-amd64.tar.gz"
-        elif [ "$OS" = "Darwin" ]; then
-            GO_BINARY="go1.22.4.darwin-amd64.tar.gz"
-        fi
-    elif [ "$ARCH" = "aarch64" ]; then
-        if [ "$OS" = "Linux" ]; then
-            GO_BINARY="go1.22.4.linux-arm64.tar.gz"
-        elif [ "$OS" = "Darwin" ]; then
-            GO_BINARY="go1.22.4.darwin-arm64.tar.gz"
-        fi
-    else
-        echo "Unsupported architecture: $ARCH"
-        exit 1
-    fi
-
-    # Download and install Go
-    wget https://go.dev/dl/$GO_BINARY > /dev/null 2>&1 || echo "Failed to download Go!"
-    sudo tar -xvf $GO_BINARY > /dev/null 2>&1 || echo "Failed to extract Go!"
-    sudo rm -rf /usr/local/go || echo "Failed to remove existing Go!"
-    sudo mv go /usr/local || echo "Failed to move Go!"
-    sudo rm $GO_BINARY || echo "Failed to remove downloaded archive!"
-    
-    echo "Go 1.22.4 has been installed successfully."
-else
-    echo "Go version 1.22.4 is already installed. No action needed."
-fi
 
 #==========================
 # NODE UPDATE
